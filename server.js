@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
-const userRoutes = require('./routes/userRoutes'); // om du har det
+const userRoutes = require('./routes/userRoutes'); // om du har den
 const http = require('http');
 const socketio = require('socket.io');
 require('dotenv').config();
@@ -13,37 +13,36 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: 'https://coworking-frontend-weld.vercel.app',
+    origin: 'https://coworking-frontend-weld.vercel.app', // <- din Vercel-URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
   }
 });
 
-// === CORS-konfiguration ===
+// CORS-inställningar
 const corsOptions = {
   origin: 'https://coworking-frontend-weld.vercel.app',
   credentials: true
 };
 app.use(cors(corsOptions));
 
-// === Middleware ===
+// Middleware
 app.use(express.json());
 
-// === API-routes ===
+// API-routes
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
-app.use('/api/users', userRoutes); // om du har en sådan
+app.use('/api/users', userRoutes); // om du har den
 
-// === MongoDB-anslutning ===
+// MongoDB-anslutning
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Ansluten till MongoDB'))
   .catch((err) => console.error('❌ MongoDB error:', err));
 
-// === WebSocket / Socket.io ===
+// WebSocket
 io.on('connection', (socket) => {
-  console.log('🔌 Ny användare ansluten');
-
+  console.log('🔌 Användare ansluten');
   socket.on('disconnect', () => {
     console.log('🔌 Användare frånkopplad');
   });
@@ -51,8 +50,8 @@ io.on('connection', (socket) => {
 
 app.set('io', io);
 
-// === Starta servern ===
+// Starta server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`🚀 Servern körs på port ${PORT}`);
+  console.log(`🚀 Server körs på port ${PORT}`);
 });
