@@ -55,7 +55,7 @@ io.on("connection", (socket) => {
 app.set("io", io);
 
 // Starta server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5003;
 server.listen(PORT, () => {
   console.log(`🚀 Server körs på port ${PORT}`);
 });
