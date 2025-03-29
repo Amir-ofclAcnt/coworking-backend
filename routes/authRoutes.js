@@ -6,19 +6,30 @@ const User = require("../models/User");
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
+  const { username, password, role } = req.body;
+
   try {
-    const { username, password } = req.body;
+    // Kontrollera om användarnamn redan finns
     const existingUser = await User.findOne({ username });
     if (existingUser)
-      return res.status(400).json({ message: "Username already exists" });
+      return res.status(400).json({ message: "Användarnamnet är redan taget" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashedPassword });
+    // Hasha lösenord
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Skapa ny användare
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      role: role || "User",
+    });
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Registration failed", error });
+    res.status(201).json({ message: "Användare skapad" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Serverfel" });
   }
 });
 
