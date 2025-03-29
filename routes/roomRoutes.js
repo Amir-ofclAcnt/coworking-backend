@@ -1,7 +1,7 @@
 // === routes/roomRoutes.js ===
 const express = require("express");
 const Room = require("../models/Room");
-const { verifyToken, isAdmin } = require("../middlewares/authMiddleware");
+const { verifyToken, isAdmin } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 

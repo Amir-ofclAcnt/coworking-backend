@@ -1,7 +1,7 @@
 const express = require("express");
 const Booking = require("../models/Booking");
 const Room = require("../models/Room");
-const { verifyToken, isAdmin } = require("../authMiddleware");
+const { verifyToken, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 // POST /bookings - create a booking
