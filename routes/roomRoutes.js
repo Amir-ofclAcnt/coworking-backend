@@ -1,7 +1,7 @@
 // === routes/roomRoutes.js ===
 const express = require("express");
 const Room = require("../models/Room");
-const { verifyToken, isAdmin } = require("../authMiddleware");
+const { verifyToken, isAdmin } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
@@ -22,7 +22,9 @@ router.post("/", verifyToken, isAdmin, async (req, res) => {
 // Uppdatera rum (Admin)
 router.put("/:id", verifyToken, isAdmin, async (req, res) => {
   try {
-    const updatedRoom = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedRoom = await Room.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.json(updatedRoom);
   } catch (err) {
     res.status(500).json({ message: "Kunde inte uppdatera rum", error: err });
