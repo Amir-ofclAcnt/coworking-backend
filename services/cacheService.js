@@ -1,15 +1,25 @@
-// services/cacheService.js
-const redisClient = require('../config/redis');
+const { createClient } = require("redis");
 
-exports.getCache = async (key) => {
-  const data = await redisClient.get(key);
-  return data ? JSON.parse(data) : null;
-};
+let redisClient;
 
-exports.setCache = async (key, value, ttl = 60) => {
-  await redisClient.setEx(key, ttl, JSON.stringify(value));
-};
+if (process.env.REDIS_URL) {
+  redisClient = createClient({
+    url: process.env.REDIS_URL,
+    socket: {
+      tls: true,
+      keepAlive: true
+    }
+  });
 
-exports.clearCache = async (key) => {
-  await redisClient.del(key);
-};
+  redisClient.on("error", (err) => {
+    console.error("❌ Redis error:", err.message);
+  });
+
+  redisClient.connect()
+    .then(() => console.log("✅ Redis connected"))
+    .catch((err) => console.error("❌ Redis connection failed:", err.message));
+} else {
+  console.warn("⚠️ REDIS_URL saknas – Redis-cache är inaktiverad");
+}
+
+module.exports = redisClient;
